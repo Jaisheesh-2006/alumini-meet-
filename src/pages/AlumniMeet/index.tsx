@@ -1,9 +1,9 @@
 import AlumniMeetNavbar from './components/Navbar';
 import AlumniMeetHero from './components/Hero';
 import AlumniMeetFooter from './components/Footer';
-import AlumniInfoAndTimeline from './components/AlumniInfoAndTimeline';
 import ContactCard from './components/ContactCard';
 import { useTheme } from '../../context/ThemeContext';
+import AlumniMeetTimeline from './components/TimeLine';
 
 const AlumniMeetPage = () => {
     const { theme } = useTheme();
@@ -18,8 +18,9 @@ const AlumniMeetPage = () => {
             <AlumniMeetNavbar />
             <main>
                 <AlumniMeetHero />
-                <AlumniInfoAndTimeline />
-                {/* <AlumniMeetTimeline /> */}
+
+                <AlumniMeetTimeline />
+
                 <ContactCard />
             </main>
             <AlumniMeetFooter />
