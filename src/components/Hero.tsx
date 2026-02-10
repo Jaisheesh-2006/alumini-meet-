@@ -2,7 +2,7 @@
 import { useSequenceAnimation } from '../hooks/useScrollAnimation';
 import { Link } from 'react-router-dom';
 import AlumniMeetBanner from '../assets/premium.png';
-import DirectoryBanner from '../assets/College5.png';
+import DirectoryBanner from '../assets/dir.png';
 
 const Hero = () => {
     const heroRef = useSequenceAnimation({
