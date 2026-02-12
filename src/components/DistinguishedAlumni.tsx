@@ -11,6 +11,7 @@ import imgMilan from '../assets/awardees/Milan Singh.jpeg';
 import imgPrashant from '../assets/awardees/Dr. Prashant Singh Rana.jpeg';
 import imgAbhishek from '../assets/awardees/Abhishek Kishore Gupta.jpg';
 import imgPraveen from '../assets/awardees/Praveen Gupta.jpeg';
+import imgAnurag from '../assets/awardees/Anurag Upadhyay.png';
 import imgLeafs from '../assets/leafs.png';
 
 interface AlumnusProps {
@@ -97,6 +98,15 @@ const alumniData: AlumnusProps[] = [
         organization: "OSTO and WiJungle",
         batch: "",
         image: imgPraveen
+    },
+    {
+        year: 2024,
+        awardCategory: "Excellence in Governance/Civil Service/Public Service",
+        name: "Anurag Upadhyay",
+        role: "Asst. Sec. Officer",
+        organization: "PMO",
+        batch: "",
+        image: imgAnurag
     }
 ];
 
