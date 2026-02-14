@@ -3,9 +3,10 @@ import React, { useMemo, useState } from "react";
 import { Search, Edit } from "lucide-react";
 import Select, { type StylesConfig } from "react-select";
 import UpdateDetailsDialog from "./UpdateDetailsDialog";
-import { useLocationAPI, type SelectOption } from "../hooks/useLocationAPI";
+import { type SelectOption } from "../hooks/useLocationAPI";
 
 interface Alumni {
+  serialNo?: string;
   name: string;
   rollNumber: string;
   department?: string;
@@ -13,6 +14,7 @@ interface Alumni {
   lastOrganization?: string;
   currentLocationIndia?: string;
   currentOverseasLocation?: string;
+  country?: string;
   batch?: string;
   gender?: string;
   yearOfEntry?: number;
@@ -30,6 +32,7 @@ interface Alumni {
   higherStudies?: string;
   startup?: string;
   achievements?: string;
+  collegeClubs?: string;
   photoLink?: string;
 }
 
@@ -87,6 +90,56 @@ const selectStyles: StylesConfig<SelectOption, false> = {
   }),
 };
 
+const NATURE_OF_JOB_OPTIONS = [
+  "ACADEMIA",
+  "BANKING",
+  "CAREERBREAK",
+  "CORPORATE",
+  "DECEASED",
+  "ENTREPRENEUR",
+  "FREELANCE",
+  "GLOBAL",
+  "GOVERNMENT",
+];
+
+const PROGRAM_NAME_OPTIONS = [
+  "BCS",
+  "BIT",
+  "MBA",
+  "MTECH",
+  "IPG",
+  "PGDIT",
+  "PGDMIT",
+  "PHD",
+  "DSC",
+];
+
+const SPECIALIZATION_OPTIONS = [
+  "AN",
+  "BA",
+  "BI",
+  "CN",
+  "DC",
+  "ICS",
+  "IFS",
+  "IMG",
+  "IMT",
+  "IS",
+  "ISM",
+  "IT+MBA",
+  "ITES",
+  "MBA",
+  "MTECH",
+  "NFSPAM",
+  "PAMF",
+  "PIT",
+  "PMGF",
+  "PSM",
+  "SE",
+  "VLSI",
+  "WNC",
+];
+
 const Network: React.FC = () => {
   const selectPortalTarget =
     typeof document !== "undefined" ? document.body : null;
@@ -103,12 +156,14 @@ const Network: React.FC = () => {
   const [yearOfEntryQuery, setYearOfEntryQuery] = useState<SelectOption | null>(
     null,
   );
-  const [countryQuery, setCountryQuery] = useState<SelectOption | null>(null);
-  const [cityQuery, setCityQuery] = useState<SelectOption | null>(null);
-  const [natureOfJobQuery, setNatureOfJobQuery] = useState<SelectOption | null>(
+  const [programNameQuery, setProgramNameQuery] = useState<SelectOption | null>(
     null,
   );
-  const [programNameQuery, setProgramNameQuery] = useState<SelectOption | null>(
+  const [countryQuery, setCountryQuery] = useState("");
+  const [cityQuery, setCityQuery] = useState("");
+  const [lastPositionQuery, setLastPositionQuery] = useState("");
+  const [collegeClubsQuery, setCollegeClubsQuery] = useState("");
+  const [natureOfJobQuery, setNatureOfJobQuery] = useState<SelectOption | null>(
     null,
   );
   const [specializationQuery, setSpecializationQuery] =
@@ -126,9 +181,6 @@ const Network: React.FC = () => {
   const [hoveredRow, setHoveredRow] = useState<string | null>(null);
   const [isAdvancedFiltersOpen, setIsAdvancedFiltersOpen] = useState(false);
 
-  const { countries, cities, loadingCountries, loadingCities } =
-    useLocationAPI(countryQuery);
-
   const yearOfEntryOptions = useMemo<SelectOption[]>(() => {
     const startYear = 1998;
     const endYear = 2026;
@@ -140,63 +192,22 @@ const Network: React.FC = () => {
 
   const natureOfJobOptions = useMemo<SelectOption[]>(
     () =>
-      [
-        "Academia",
-        "Banking",
-        "Career Break",
-        "Corporate",
-        "Deceased",
-        "Entrepreneur",
-        "Freelance",
-        "Global",
-        "Government",
-      ].map((option) => ({ value: option, label: option })),
+      NATURE_OF_JOB_OPTIONS.map((option) => ({ value: option, label: option })),
     [],
   );
 
   const programNameOptions = useMemo<SelectOption[]>(
     () =>
-      [
-        "BCS",
-        "BIT",
-        "MBA",
-        "MTECH",
-        "IPG",
-        "PGDIT",
-        "PGDMIT",
-        "PHD",
-        "DSC",
-      ].map((option) => ({ value: option, label: option })),
+      PROGRAM_NAME_OPTIONS.map((option) => ({ value: option, label: option })),
     [],
   );
 
   const specializationOptions = useMemo<SelectOption[]>(
     () =>
-      [
-        "AN",
-        "BA",
-        "BI",
-        "CN",
-        "DC",
-        "ICS",
-        "IFS",
-        "IMG",
-        "IMT",
-        "IS",
-        "ISM",
-        "IT+MBA",
-        "ITES",
-        "MBA",
-        "MTECH",
-        "NFSPAM",
-        "PAMF",
-        "PIT",
-        "PMGF",
-        "PSM",
-        "SE",
-        "VLSI",
-        "WNC",
-      ].map((option) => ({ value: option, label: option })),
+      SPECIALIZATION_OPTIONS.map((option) => ({
+        value: option,
+        label: option,
+      })),
     [],
   );
 
@@ -205,10 +216,12 @@ const Network: React.FC = () => {
     setRollQuery("");
     setCompanyQuery("");
     setYearOfEntryQuery(null);
-    setCountryQuery(null);
-    setCityQuery(null);
-    setNatureOfJobQuery(null);
     setProgramNameQuery(null);
+    setCountryQuery("");
+    setCityQuery("");
+    setLastPositionQuery("");
+    setCollegeClubsQuery("");
+    setNatureOfJobQuery(null);
     setSpecializationQuery(null);
   };
 
@@ -221,17 +234,24 @@ const Network: React.FC = () => {
       const params = new URLSearchParams();
       if (nameQuery) params.append("name", nameQuery);
       if (rollQuery) params.append("rollNumber", rollQuery);
-      if (companyQuery) params.append("company", companyQuery);
+      if (companyQuery) params.append("lastOrganization", companyQuery);
       if (yearOfEntryQuery?.value)
         params.append("yearOfEntry", yearOfEntryQuery.value);
-      if (natureOfJobQuery?.value)
-        params.append("natureOfJob", natureOfJobQuery.value);
       if (programNameQuery?.value)
         params.append("programName", programNameQuery.value);
+      if (natureOfJobQuery?.value)
+        params.append("natureOfJob", natureOfJobQuery.value);
       if (specializationQuery?.value)
         params.append("specialization", specializationQuery.value);
-      if (countryQuery?.label) params.append("country", countryQuery.label);
-      if (cityQuery?.label) params.append("city", cityQuery.label);
+      if (countryQuery) {
+        const normalizedCountry = countryQuery.trim().toUpperCase();
+        if (normalizedCountry) {
+          params.append("country", normalizedCountry);
+        }
+      }
+      if (cityQuery) params.append("city", cityQuery);
+      if (lastPositionQuery) params.append("lastPosition", lastPositionQuery);
+      if (collegeClubsQuery) params.append("collegeClubs", collegeClubsQuery);
       params.append("page", page.toString());
       params.append("limit", pageSize.toString());
 
@@ -340,11 +360,6 @@ const Network: React.FC = () => {
     }
   };
 
-  const handleCountryChange = (option: SelectOption | null) => {
-    setCountryQuery(option);
-    setCityQuery(null);
-  };
-
   return (
     <section id="network" className="py-20 px-4 bg-transparent">
       <div className="max-w-7xl mx-auto">
@@ -374,8 +389,8 @@ const Network: React.FC = () => {
           </div>
 
           <div className="p-8 bg-gray-900">
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 mb-6 items-end">
-              <div className="relative lg:col-span-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-4 mb-6 items-end">
+              <div className="relative lg:col-span-3">
                 <label className="block text-sm font-semibold text-gray-200 mb-2">
                   Name
                 </label>
@@ -388,7 +403,7 @@ const Network: React.FC = () => {
                 />
               </div>
 
-              <div className="lg:col-span-4">
+              <div className="lg:col-span-3">
                 <label className="block text-sm font-semibold text-gray-200 mb-2">
                   Year of Entry
                 </label>
@@ -405,7 +420,24 @@ const Network: React.FC = () => {
                 />
               </div>
 
-              <div className="lg:col-span-4">
+              <div className="lg:col-span-3">
+                <label className="block text-sm font-semibold text-gray-200 mb-2">
+                  Program Name
+                </label>
+                <Select<SelectOption, false>
+                  options={programNameOptions}
+                  value={programNameQuery}
+                  onChange={(option) => setProgramNameQuery(option)}
+                  isClearable
+                  isSearchable
+                  menuPortalTarget={selectPortalTarget}
+                  menuPosition="fixed"
+                  placeholder="Select program name"
+                  styles={selectStyles}
+                />
+              </div>
+
+              <div className="lg:col-span-3">
                 <label className="block text-sm font-semibold text-gray-200 mb-2">
                   Company
                 </label>
@@ -418,7 +450,7 @@ const Network: React.FC = () => {
                 />
               </div>
 
-              <div className="lg:col-span-12 flex gap-3">
+              <div className="md:col-span-2 lg:col-span-12 flex flex-wrap gap-3">
                 <button
                   onClick={() => handleSearch(1)}
                   disabled={loading}
@@ -445,17 +477,27 @@ const Network: React.FC = () => {
           onClick={() => setIsAdvancedFiltersOpen(false)}
         >
           <div
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="advanced-filters-title"
             className={`absolute right-0 top-0 h-full w-full max-w-xl bg-gray-900 border-l border-gray-700 shadow-2xl p-6 md:p-8 overflow-y-auto transition-transform duration-300 ${isAdvancedFiltersOpen ? "translate-x-0" : "translate-x-full"}`}
-            onClick={(e) => e.stopPropagation()}
+            onClick={(e) => {
+              if (!isAdvancedFiltersOpen) return;
+              e.stopPropagation();
+            }}
           >
             <div className="flex items-center justify-between mb-6">
-              <h4 className="text-2xl font-bold text-white">
+              <h4
+                id="advanced-filters-title"
+                className="text-2xl font-bold text-white"
+              >
                 Advanced Filters
               </h4>
               <button
                 onClick={() => setIsAdvancedFiltersOpen(false)}
                 className="text-gray-300 hover:text-white text-lg"
                 aria-label="Close advanced filters"
+                aria-expanded={isAdvancedFiltersOpen}
               >
                 ✕
               </button>
@@ -479,15 +521,12 @@ const Network: React.FC = () => {
                 <label className="block text-sm font-semibold text-gray-200 mb-2">
                   Country
                 </label>
-                <Select<SelectOption, false>
-                  options={countries}
+                <input
+                  type="text"
+                  placeholder="Enter country"
                   value={countryQuery}
-                  onChange={handleCountryChange}
-                  isClearable
-                  isSearchable
-                  isLoading={loadingCountries}
-                  placeholder="Type to search country"
-                  styles={selectStyles}
+                  onChange={(e) => setCountryQuery(e.target.value)}
+                  className="w-full border-2 border-gray-700 bg-gray-800 text-gray-100 rounded-lg p-3 focus:border-gray-500 focus:outline-none focus:shadow-lg transition-all placeholder-gray-500"
                 />
               </div>
 
@@ -495,20 +534,12 @@ const Network: React.FC = () => {
                 <label className="block text-sm font-semibold text-gray-200 mb-2">
                   City
                 </label>
-                <Select<SelectOption, false>
-                  options={cities}
+                <input
+                  type="text"
+                  placeholder="Enter city"
                   value={cityQuery}
-                  onChange={(option) => setCityQuery(option)}
-                  isClearable
-                  isSearchable
-                  isDisabled={!countryQuery}
-                  isLoading={loadingCities}
-                  placeholder={
-                    countryQuery
-                      ? "Type to search city"
-                      : "Select country first"
-                  }
-                  styles={selectStyles}
+                  onChange={(e) => setCityQuery(e.target.value)}
+                  className="w-full border-2 border-gray-700 bg-gray-800 text-gray-100 rounded-lg p-3 focus:border-gray-500 focus:outline-none focus:shadow-lg transition-all placeholder-gray-500"
                 />
               </div>
 
@@ -529,22 +560,7 @@ const Network: React.FC = () => {
 
               <div>
                 <label className="block text-sm font-semibold text-gray-200 mb-2">
-                  Program Name
-                </label>
-                <Select<SelectOption, false>
-                  options={programNameOptions}
-                  value={programNameQuery}
-                  onChange={(option) => setProgramNameQuery(option)}
-                  isClearable
-                  isSearchable
-                  placeholder="Select program name"
-                  styles={selectStyles}
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-semibold text-gray-200 mb-2">
-                  Specialisation
+                  Specialization
                 </label>
                 <Select<SelectOption, false>
                   options={specializationOptions}
@@ -552,8 +568,34 @@ const Network: React.FC = () => {
                   onChange={(option) => setSpecializationQuery(option)}
                   isClearable
                   isSearchable
-                  placeholder="Select specialisation"
+                  placeholder="Select specialization"
                   styles={selectStyles}
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-semibold text-gray-200 mb-2">
+                  Last Position
+                </label>
+                <input
+                  type="text"
+                  placeholder="Enter last position"
+                  value={lastPositionQuery}
+                  onChange={(e) => setLastPositionQuery(e.target.value)}
+                  className="w-full border-2 border-gray-700 bg-gray-800 text-gray-100 rounded-lg p-3 focus:border-gray-500 focus:outline-none focus:shadow-lg transition-all placeholder-gray-500"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-semibold text-gray-200 mb-2">
+                  College Clubs
+                </label>
+                <input
+                  type="text"
+                  placeholder="Enter college clubs"
+                  value={collegeClubsQuery}
+                  onChange={(e) => setCollegeClubsQuery(e.target.value)}
+                  className="w-full border-2 border-gray-700 bg-gray-800 text-gray-100 rounded-lg p-3 focus:border-gray-500 focus:outline-none focus:shadow-lg transition-all placeholder-gray-500"
                 />
               </div>
             </div>
@@ -702,14 +744,14 @@ const Network: React.FC = () => {
                 {/* Page numbers */}
                 <div className="flex gap-1">
                   {Array.from(
-                    { length: Math.ceil(totalCount / 20) },
+                    { length: Math.ceil(totalCount / pageSize) },
                     (_, i) => i + 1,
                   )
                     .filter((page) => {
                       const offset = 2;
                       return (
                         page === 1 ||
-                        page === Math.ceil(totalCount / 20) ||
+                        page === Math.ceil(totalCount / pageSize) ||
                         (page >= currentPage - offset &&
                           page <= currentPage + offset)
                       );
@@ -783,6 +825,7 @@ const Network: React.FC = () => {
             <a
               href="https://www.linkedin.com/groups/59379/"
               target="_blank"
+              rel="noopener noreferrer"
               className="text-gray-200 font-semibold hover:text-white"
             >
               LinkedIn →
@@ -796,7 +839,6 @@ const Network: React.FC = () => {
         <UpdateDetailsDialog
           isOpen={isDialogOpen}
           onClose={() => {
-            console.log("Dialog closing...");
             setIsDialogOpen(false);
             setSelectedAlumni(null);
           }}
