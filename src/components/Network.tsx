@@ -360,6 +360,13 @@ const Network: React.FC = () => {
     }
   };
 
+  const getLinkedInUrl = (url?: string) => {
+    if (!url) return "";
+    const trimmed = url.trim();
+    if (!trimmed) return "";
+    return /^https?:\/\//i.test(trimmed) ? trimmed : `https://${trimmed}`;
+  };
+
   return (
     <section id="network" className="py-20 px-4 bg-transparent">
       <div className="max-w-7xl mx-auto">
@@ -696,7 +703,19 @@ const Network: React.FC = () => {
                       onMouseLeave={() => setHoveredRow(null)}
                     >
                       <td className="px-6 py-4 font-medium text-white">
-                        {alumni.name || "NA"}
+                        {alumni.linkedIn ? (
+                          <a
+                            href={getLinkedInUrl(alumni.linkedIn)}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-white hover:text-blue-300 underline underline-offset-2"
+                            aria-label={`Open LinkedIn profile for ${alumni.name || "alumni"}`}
+                          >
+                            {alumni.name || "NA"}
+                          </a>
+                        ) : (
+                          alumni.name || "NA"
+                        )}
                       </td>
                       <td className="px-6 py-4 text-gray-300">
                         {alumni.rollNumber || "NA"}
