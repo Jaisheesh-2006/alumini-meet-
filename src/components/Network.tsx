@@ -4,6 +4,7 @@ import { Search, Edit } from "lucide-react";
 import Select, { type StylesConfig } from "react-select";
 import UpdateDetailsDialog from "./UpdateDetailsDialog";
 import { type SelectOption } from "../hooks/useLocationAPI";
+import { useTheme } from "../context/ThemeContext";
 
 interface Alumni {
   serialNo?: string;
@@ -39,55 +40,71 @@ interface Alumni {
 const rawUrl = import.meta.env.VITE_DATABASE_URL || "";
 const DATABASE_URL = rawUrl.endsWith("/") ? rawUrl : `${rawUrl}/`;
 
-const selectStyles: StylesConfig<SelectOption, false> = {
-  control: (base, state) => ({
-    ...base,
-    backgroundColor: "#1f2937",
-    borderColor: state.isFocused ? "#6b7280" : "#374151",
-    minHeight: "48px",
-    boxShadow: "none",
-    "&:hover": {
-      borderColor: "#6b7280",
-    },
-  }),
-  menu: (base) => ({
-    ...base,
-    backgroundColor: "#111827",
-    border: "1px solid #374151",
-    zIndex: 60,
-  }),
-  option: (base, state) => ({
-    ...base,
-    backgroundColor: state.isFocused ? "#374151" : "#111827",
-    color: "#f3f4f6",
-    cursor: "pointer",
-  }),
-  singleValue: (base) => ({
-    ...base,
-    color: "#f3f4f6",
-  }),
-  placeholder: (base) => ({
-    ...base,
-    color: "#9ca3af",
-  }),
-  input: (base) => ({
-    ...base,
-    color: "#f3f4f6",
-  }),
-  clearIndicator: (base) => ({
-    ...base,
-    color: "#9ca3af",
-    "&:hover": { color: "#f3f4f6" },
-  }),
-  dropdownIndicator: (base) => ({
-    ...base,
-    color: "#9ca3af",
-    "&:hover": { color: "#f3f4f6" },
-  }),
-  menuPortal: (base) => ({
-    ...base,
-    zIndex: 9999,
-  }),
+const getSelectStyles = (theme: "light" | "dark"): StylesConfig<SelectOption, false> => {
+  const isDark = theme === "dark";
+
+  return {
+    control: (base, state) => ({
+      ...base,
+      backgroundColor: isDark ? "#1f2937" : "#ffffff",
+      borderColor: state.isFocused
+        ? isDark
+          ? "#6b7280"
+          : "#2563eb"
+        : isDark
+          ? "#374151"
+          : "#d1d5db",
+      minHeight: "48px",
+      boxShadow: "none",
+      "&:hover": {
+        borderColor: isDark ? "#6b7280" : "#93c5fd",
+      },
+    }),
+    menu: (base) => ({
+      ...base,
+      backgroundColor: isDark ? "#111827" : "#ffffff",
+      border: `1px solid ${isDark ? "#374151" : "#e5e7eb"}`,
+      zIndex: 60,
+    }),
+    option: (base, state) => ({
+      ...base,
+      backgroundColor: isDark
+        ? state.isFocused
+          ? "#374151"
+          : "#111827"
+        : state.isFocused
+          ? "#eff6ff"
+          : "#ffffff",
+      color: isDark ? "#f3f4f6" : "#111827",
+      cursor: "pointer",
+    }),
+    singleValue: (base) => ({
+      ...base,
+      color: isDark ? "#f3f4f6" : "#111827",
+    }),
+    placeholder: (base) => ({
+      ...base,
+      color: isDark ? "#9ca3af" : "#6b7280",
+    }),
+    input: (base) => ({
+      ...base,
+      color: isDark ? "#f3f4f6" : "#111827",
+    }),
+    clearIndicator: (base) => ({
+      ...base,
+      color: isDark ? "#9ca3af" : "#6b7280",
+      "&:hover": { color: isDark ? "#f3f4f6" : "#111827" },
+    }),
+    dropdownIndicator: (base) => ({
+      ...base,
+      color: isDark ? "#9ca3af" : "#6b7280",
+      "&:hover": { color: isDark ? "#f3f4f6" : "#111827" },
+    }),
+    menuPortal: (base) => ({
+      ...base,
+      zIndex: 9999,
+    }),
+  };
 };
 
 const NATURE_OF_JOB_OPTIONS = [
@@ -141,8 +158,10 @@ const SPECIALIZATION_OPTIONS = [
 ];
 
 const Network: React.FC = () => {
+  const { theme } = useTheme();
   const selectPortalTarget =
     typeof document !== "undefined" ? document.body : null;
+  const selectStyles = useMemo(() => getSelectStyles(theme), [theme]);
 
   const headerRef = useScrollAnimation({ yStart: 50, opacityStart: 0 });
   const searchRef = useScrollAnimation({
