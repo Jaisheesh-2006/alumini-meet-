@@ -18,9 +18,7 @@ const AlumniMeetPage = () => {
             <AlumniMeetNavbar />
             <main>
                 <AlumniMeetHero />
-
                 <AlumniMeetTimeline />
-
                 <ContactCard />
             </main>
             <AlumniMeetFooter />
