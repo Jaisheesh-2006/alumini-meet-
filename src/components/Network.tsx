@@ -40,7 +40,9 @@ interface Alumni {
 const rawUrl = import.meta.env.VITE_DATABASE_URL || "";
 const DATABASE_URL = rawUrl.endsWith("/") ? rawUrl : `${rawUrl}/`;
 
-const getSelectStyles = (theme: "light" | "dark"): StylesConfig<SelectOption, false> => {
+const getSelectStyles = (
+  theme: "light" | "dark",
+): StylesConfig<SelectOption, false> => {
   const isDark = theme === "dark";
 
   return {
@@ -122,6 +124,8 @@ const NATURE_OF_JOB_OPTIONS = [
 const PROGRAM_NAME_OPTIONS = [
   "BCS",
   "BIT",
+  "IMG",
+  "IMT",
   "MBA",
   "MTECH",
   "IPG",
@@ -131,31 +135,12 @@ const PROGRAM_NAME_OPTIONS = [
   "DSC",
 ];
 
-const SPECIALIZATION_OPTIONS = [
-  "AN",
-  "BA",
-  "BI",
-  "CN",
-  "DC",
-  "ICS",
-  "IFS",
-  "IMG",
-  "IMT",
-  "IS",
-  "ISM",
-  "IT+MBA",
-  "ITES",
-  "MBA",
-  "MTECH",
-  "NFSPAM",
-  "PAMF",
-  "PIT",
-  "PMGF",
-  "PSM",
-  "SE",
-  "VLSI",
-  "WNC",
-];
+const PROGRAM_SPECIALIZATION_MAP: Record<string, string[]> = {
+  IPG: ["MBA", "MTECH"],
+  MBA: ["BA", "IFS", "ISM", "ITES", "NFS", "PSM"],
+  MTECH: ["AN", "BI", "CN", "DC", "ICS", "IS", "IT", "SE", "VLSI", "WNC"],
+  PHD: ["PIT", "PITF", "PMG", "PMGF", "PAM", "PAMF", "PAP"],
+};
 
 const Network: React.FC = () => {
   const { theme } = useTheme();
@@ -222,13 +207,33 @@ const Network: React.FC = () => {
   );
 
   const specializationOptions = useMemo<SelectOption[]>(
-    () =>
-      SPECIALIZATION_OPTIONS.map((option) => ({
+    () => {
+      const selectedProgram = programNameQuery?.value;
+      if (!selectedProgram) return [];
+
+      const optionsForProgram = PROGRAM_SPECIALIZATION_MAP[selectedProgram] || [];
+      return [...optionsForProgram].sort((a, b) => a.localeCompare(b)).map((option) => ({
         value: option,
         label: option,
-      })),
-    [],
+      }));
+    },
+    [programNameQuery],
   );
+
+  const handleProgramNameChange = (option: SelectOption | null) => {
+    setProgramNameQuery(option);
+
+    const selectedProgram = option?.value;
+    if (!selectedProgram) {
+      setSpecializationQuery(null);
+      return;
+    }
+
+    const validOptions = PROGRAM_SPECIALIZATION_MAP[selectedProgram] || [];
+    if (!specializationQuery?.value || !validOptions.includes(specializationQuery.value)) {
+      setSpecializationQuery(null);
+    }
+  };
 
   const clearAllFilters = () => {
     setNameQuery("");
@@ -453,7 +458,7 @@ const Network: React.FC = () => {
                 <Select<SelectOption, false>
                   options={programNameOptions}
                   value={programNameQuery}
-                  onChange={(option) => setProgramNameQuery(option)}
+                  onChange={handleProgramNameChange}
                   isClearable
                   isSearchable
                   menuPortalTarget={selectPortalTarget}
@@ -592,9 +597,14 @@ const Network: React.FC = () => {
                   options={specializationOptions}
                   value={specializationQuery}
                   onChange={(option) => setSpecializationQuery(option)}
+                  isDisabled={!programNameQuery}
                   isClearable
                   isSearchable
-                  placeholder="Select specialization"
+                  placeholder={
+                    programNameQuery
+                      ? "Select specialization"
+                      : "Select program name first"
+                  }
                   styles={selectStyles}
                 />
               </div>

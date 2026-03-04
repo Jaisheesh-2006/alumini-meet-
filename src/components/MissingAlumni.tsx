@@ -25,6 +25,8 @@ const DATABASE_URL = rawUrl.endsWith("/") ? rawUrl : `${rawUrl}/`;
 const PROGRAM_NAME_OPTIONS = [
   "BCS",
   "BIT",
+  "IMG",
+  "IMT",
   "MBA",
   "MTECH",
   "IPG",
@@ -34,33 +36,16 @@ const PROGRAM_NAME_OPTIONS = [
   "DSC",
 ];
 
-const SPECIALIZATION_OPTIONS = [
-  "AN",
-  "BA",
-  "BI",
-  "CN",
-  "DC",
-  "ICS",
-  "IFS",
-  "IMG",
-  "IMT",
-  "IS",
-  "ISM",
-  "IT+MBA",
-  "ITES",
-  "MBA",
-  "MTECH",
-  "NFSPAM",
-  "PAMF",
-  "PIT",
-  "PMGF",
-  "PSM",
-  "SE",
-  "VLSI",
-  "WNC",
-];
+const PROGRAM_SPECIALIZATION_MAP: Record<string, string[]> = {
+  IPG: ["MBA", "MTECH"],
+  MBA: ["BA", "IFS", "ISM", "ITES", "NFS", "PSM"],
+  MTECH: ["AN", "BI", "CN", "DC", "ICS", "IS", "IT", "SE", "VLSI", "WNC"],
+  PHD: ["PIT", "PITF", "PMG", "PMGF", "PAM", "PAMF", "PAP"],
+};
 
-const getSelectStyles = (theme: "light" | "dark"): StylesConfig<SelectOption, false> => {
+const getSelectStyles = (
+  theme: "light" | "dark",
+): StylesConfig<SelectOption, false> => {
   const isDark = theme === "dark";
 
   return {
@@ -174,13 +159,33 @@ const MissingAlumni: React.FC = () => {
   );
 
   const specializationOptions = useMemo<SelectOption[]>(
-    () =>
-      SPECIALIZATION_OPTIONS.map((option) => ({
+    () => {
+      const selectedProgram = programNameQuery?.value;
+      if (!selectedProgram) return [];
+
+      const optionsForProgram = PROGRAM_SPECIALIZATION_MAP[selectedProgram] || [];
+      return [...optionsForProgram].sort((a, b) => a.localeCompare(b)).map((option) => ({
         value: option,
         label: option,
-      })),
-    [],
+      }));
+    },
+    [programNameQuery],
   );
+
+  const handleProgramNameChange = (option: SelectOption | null) => {
+    setProgramNameQuery(option);
+
+    const selectedProgram = option?.value;
+    if (!selectedProgram) {
+      setSpecializationQuery(null);
+      return;
+    }
+
+    const validOptions = PROGRAM_SPECIALIZATION_MAP[selectedProgram] || [];
+    if (!specializationQuery?.value || !validOptions.includes(specializationQuery.value)) {
+      setSpecializationQuery(null);
+    }
+  };
 
   const getLinkedInUrl = (url?: string) => {
     if (!url) return "";
@@ -326,7 +331,7 @@ const MissingAlumni: React.FC = () => {
                 <Select<SelectOption, false>
                   options={programNameOptions}
                   value={programNameQuery}
-                  onChange={(option) => setProgramNameQuery(option)}
+                  onChange={handleProgramNameChange}
                   isSearchable
                   isClearable
                   menuPortalTarget={selectPortalTarget}
@@ -344,11 +349,16 @@ const MissingAlumni: React.FC = () => {
                   options={specializationOptions}
                   value={specializationQuery}
                   onChange={(option) => setSpecializationQuery(option)}
+                  isDisabled={!programNameQuery}
                   isSearchable
                   isClearable
                   menuPortalTarget={selectPortalTarget}
                   menuPosition="fixed"
-                  placeholder="Select specialization"
+                  placeholder={
+                    programNameQuery
+                      ? "Select specialization"
+                      : "Select program name first"
+                  }
                   styles={selectStyles}
                 />
               </div>
