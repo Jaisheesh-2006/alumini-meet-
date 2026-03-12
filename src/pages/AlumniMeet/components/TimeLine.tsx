@@ -6,8 +6,8 @@ function AlumniMeetTimeline() {
             title: 'Day 1: 14th March, 2026',
             content: (
                 <div>
-                    <h3 className="text-2xl font-semibold mb-4">
-                        Day 1: 14th March, 2026
+                    <h3 className="text-xl font-semibold mb-4">
+                        Schedule
                     </h3>
                     <ul className="list-disc list-inside mb-4 space-y-2 text-gray-700 dark:text-gray-300">
                         <li>
@@ -64,8 +64,8 @@ function AlumniMeetTimeline() {
             title: 'Day 2: 15th March, 2026',
             content: (
                 <div>
-                    <h3 className="text-2xl font-semibold mb-4">
-                        Day 2: 15th March, 2026
+                    <h3 className="text-xl font-semibold mb-4">
+                         Schedule
                     </h3>
                     <ul className="list-disc list-inside mb-4 space-y-2 text-gray-700 dark:text-gray-300">
                         <li>
