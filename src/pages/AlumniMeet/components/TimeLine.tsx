@@ -28,29 +28,30 @@ function AlumniMeetTimeline() {
                             <strong>Plantation Drive:</strong> 2:30 PM to 3 PM
                         </li>
                         <li>
-                            <strong>Formal Inauguration & Addresses:</strong> 3 PM to 4 PM
+                            <strong>Formal Inauguration & Addresses:</strong> 3 PM to 3:30 PM
                             <ul className="list-disc list-inside ml-5 space-y-1 text-gray-600 dark:text-gray-400">
-                                <li>Welcome by Dean/Director</li>
+                                <li>Welcome by DAER</li>
                                 <li>Video presentation</li>
-                                <li>Address by PGDMIT batch</li>
+                                <li>Address by Alumni</li>
+                                <li>Launch of Alumni Directory</li>
                             </ul>
                         </li>
                         <li>
-                            <strong>Celebrations & Launches:</strong> 3 PM to 4:30 PM
+                            <strong>Celebrations & Launches:</strong> 3:30 PM to 4 PM
                             <ul className="list-disc list-inside ml-5 space-y-1 text-gray-600 dark:text-gray-400">
-                                <li>Felicitation of Silver Jubilee and Tin Jubilee batches</li>
-                                <li>Launch of online Alumni Directory</li>
+                                <li>Felicitation of all Alumni</li>
                                 <li>Introduction of all alumni</li>
+                                <li>Silver Jubliee and Tin Jubliee batch photograph</li>
                             </ul>
                         </li>
                         <li>
-                            <strong>Networking with Students (High Tea):</strong> 4:30 PM to 5:30 PM
+                            <strong>Distinguished Alumni Awards & Talks:</strong> 4 PM to 5 PM
                         </li>
                         <li>
-                            <strong>Distinguished Alumni Awards & Talks:</strong> 5:30 PM to 6 PM
+                            <strong>Tin Jubliee Distinguished Alumni Awards:</strong> 5 PM to 5:30 PM
                         </li>
                         <li>
-                            <strong>Open House Interaction:</strong> 6 PM to 7 PM
+                            <strong>High Tea:</strong> 5:30 PM to 6 PM
                         </li>
                         <li>
                             <strong>Gala Dinner:</strong> Evening
@@ -68,7 +69,7 @@ function AlumniMeetTimeline() {
                     </h3>
                     <ul className="list-disc list-inside mb-4 space-y-2 text-gray-700 dark:text-gray-300">
                         <li>
-                            <strong>Breakfast</strong>
+                            <strong>Breakfast at hotel</strong>
                         </li>
                         <li>
                             <strong>Interaction with Director:</strong> 10 AM to 11 AM

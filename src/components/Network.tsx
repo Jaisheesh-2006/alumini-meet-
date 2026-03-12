@@ -814,11 +814,10 @@ const Network: React.FC = () => {
                         )}
                         <button
                           onClick={() => handleSearch(page)}
-                          className={`px-3 py-2 rounded-lg font-semibold transition-all ${
-                            currentPage === page
-                              ? "bg-gray-700 text-white shadow-lg"
-                              : "border-2 border-gray-700 text-gray-300 bg-gray-900 hover:border-gray-600 hover:bg-gray-800"
-                          }`}
+                          className={`px-3 py-2 rounded-lg font-semibold transition-all ${currentPage === page
+                            ? "bg-gray-700 text-white shadow-lg"
+                            : "border-2 border-gray-700 text-gray-300 bg-gray-900 hover:border-gray-600 hover:bg-gray-800"
+                            }`}
                         >
                           {page}
                         </button>
@@ -882,6 +881,16 @@ const Network: React.FC = () => {
               LinkedIn →
             </a>
           </div>
+        </div>
+
+        {/* Disclaimer */}
+        <div className="mt-12 bg-white dark:bg-gray-900 rounded-xl shadow-lg p-6 border-l-4 border-slate-300 dark:border-gray-600">
+          <h4 className="text-base font-semibold text-slate-700 dark:text-gray-300 uppercase tracking-wider mb-2">
+            Disclaimer
+          </h4>
+          <p className="text-slate-600 dark:text-gray-400 text-sm leading-relaxed">
+            Please note that the information provided in this directory is subject to ongoing updates and validation. As the data has been collected from various public sources, it may contain inaccuracies or outdated details. Therefore, this directory is intended solely for networking and communication within the alumni community. It should not be used for any official, legal, or commercial purposes. We strongly advise users to verify details directly with the individuals concerned before taking any action based on the information presented here.
+          </p>
         </div>
       </div>
 
