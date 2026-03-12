@@ -158,19 +158,18 @@ const MissingAlumni: React.FC = () => {
     [],
   );
 
-  const specializationOptions = useMemo<SelectOption[]>(
-    () => {
-      const selectedProgram = programNameQuery?.value;
-      if (!selectedProgram) return [];
+  const specializationOptions = useMemo<SelectOption[]>(() => {
+    const selectedProgram = programNameQuery?.value;
+    if (!selectedProgram) return [];
 
-      const optionsForProgram = PROGRAM_SPECIALIZATION_MAP[selectedProgram] || [];
-      return [...optionsForProgram].sort((a, b) => a.localeCompare(b)).map((option) => ({
+    const optionsForProgram = PROGRAM_SPECIALIZATION_MAP[selectedProgram] || [];
+    return [...optionsForProgram]
+      .sort((a, b) => a.localeCompare(b))
+      .map((option) => ({
         value: option,
         label: option,
       }));
-    },
-    [programNameQuery],
-  );
+  }, [programNameQuery]);
 
   const handleProgramNameChange = (option: SelectOption | null) => {
     setProgramNameQuery(option);
@@ -182,7 +181,10 @@ const MissingAlumni: React.FC = () => {
     }
 
     const validOptions = PROGRAM_SPECIALIZATION_MAP[selectedProgram] || [];
-    if (!specializationQuery?.value || !validOptions.includes(specializationQuery.value)) {
+    if (
+      !specializationQuery?.value ||
+      !validOptions.includes(specializationQuery.value)
+    ) {
       setSpecializationQuery(null);
     }
   };
